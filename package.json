@@ -1,6 +1,6 @@
 {
   "name": "visualstudio-config",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Basic information about installed instances of Visual Studio.",
   "main": "dist/index.js",
   "scripts": {

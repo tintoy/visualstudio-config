@@ -6,12 +6,9 @@ gulp.task("default", function() {
   return gulp.src("src/**/*.ts")
     .pipe(
     	tsc({
-    		target: "ES6",
+    		target: "ES5",
             declaration: true
     	})
     )
-    // .pipe(
-    // 	babel()
-    // )
     .pipe(gulp.dest("dist"));
 });
