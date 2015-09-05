@@ -1,0 +1,33 @@
+{
+  "name": "visualstudio-config",
+  "version": "0.0.1",
+  "description": "Basic information about installed instances of Visual Studio.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tintoy/visualstudio-config.git"
+  },
+  "keywords": [
+    "visualstudio"
+  ],
+  "author": "tin toy <tintoy@tintoy.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tintoy/visualstudio-config/issues"
+  },
+  "homepage": "https://github.com/tintoy/visualstudio-config#readme",
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "lodash": "^3.10.1",
+    "regedit": "^2.2.5"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.1",
+    "gulp-tsc": "^1.1.1",
+    "typescript": "^1.5.3"
+  }
+}
