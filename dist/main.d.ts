@@ -10,9 +10,14 @@ export interface VisualStudioConfiguration {
 }
 /** The configuration for a specific version of Visual Studio */
 export interface VisualStudioVersion {
+    /** The edition of Visual Studio (e.g. "community", "pro", "enterprise", "ultimate")  */
+    edition: string;
     /** The main product install directory */
     installDir: string;
 }
+/**
+ * Provides access to information about the configuration of locally-installed Visual Studio products
+ */
 export declare class VisualStudio {
     /** Promise representing cached configuration. */
     private static loader;
@@ -22,6 +27,11 @@ export declare class VisualStudio {
      * @return A promise that resolves to the VisualStudio instance.
      */
     static loadConfiguration(refresh?: boolean): Promise<VisualStudioConfiguration>;
+    /**
+     * Constants for the names of well-known Visual Studio registry keys.
+     * @return {VSKeyNames} The key names.
+     */
+    private static vsKeyNames;
     /**
      * Get the product installation directory from the specified Visual Studio registry key.
      * @param vsKey {} The Visual Studio registry key.
