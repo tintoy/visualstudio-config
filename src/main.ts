@@ -60,12 +60,12 @@ export class VisualStudio {
 						if (items && items[keyName])
 							keys[keyName] = items[keyName];
 
-						keyLoaderResolve(null);
+						keyLoaderResolve(undefined);
 					});
 				})
 			);
 
-			// Once we're all down, scrape the registry data and pass it along.
+			// Once we're all done, scrape the registry data and pass it along.
 			Promise.all(keyLoaders)
 				.then(() => {
 					let vsInstallDir = this.getInstallDir(
@@ -111,7 +111,7 @@ export class VisualStudio {
 		return this.loader;
 	}
 
-	/** 
+	/**
 	 * Constants for the names of well-known Visual Studio registry keys.
 	 * @return {VSKeyNames} The key names.
 	 */
@@ -187,7 +187,7 @@ interface VSKeyNames {
 interface VSVersionKeyNames {
 	/** Product: Visual Studio Isolated Shell (e.g. as used by SSDT) */
 	isoShell: string;
-	
+
 	/** Information about the primary install of this version of Visual Studio */
 	vs: string;
 }
