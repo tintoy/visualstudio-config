@@ -1,9 +1,11 @@
 // Tests for registry reader.
 
+import {expect} from "chai";
+
 import {IRegistryReader} from "../registry-reader";
 import {MockRegistryReader} from "./mocks/mock-registry-reader";
 
-describe("mock registry reader", () => {
+describe("MockRegistryReader", () => {
 	const mockKey1Name = "HKLM\\SOFTWARE\\Foo\\Bar";
 
 	const mockRegistryData = {
@@ -20,12 +22,12 @@ describe("mock registry reader", () => {
 		() => mockRegistryReader = new MockRegistryReader(mockRegistryData)
 	);
 
-	describe("readKeys", () => {
+	describe(".readKeys()", () => {
 		it("should return a promise", () => {
 			const result = mockRegistryReader.readKeys("HKLM\\SOFTWARE\\Foo\\Bar", 1);
 
-			expect(result).not.toBeUndefined();
-			expect(typeof result).toBe("Promise");
+			expect(result).to.be.a("object");
+			expect(result.then).to.be.a("function");
 		});
 	});
 });
