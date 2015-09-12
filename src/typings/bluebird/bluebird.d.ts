@@ -610,6 +610,22 @@ declare module 'bluebird' {
 		static filter<R>(values: R[], filterer: (item: R, index: number, arrayLength: number) => boolean, option?: Promise.ConcurrencyOption): Promise<R[]>;
 	}
 
+	/** Delegate for resolving a promise. */
+	export interface IResolve {
+		/** Resolve the promise */
+		(): void;
+	}
+
+	/** Delegate for resolving a promise with a result. */
+	export interface IResolveWithResult<TResult> {
+		(result: TResult): void;
+	}
+
+	/** Delegate for rejecting a promise. */
+	export interface IReject {
+		(reason: any): void;
+	}
+
 	module Promise {
 		export interface RangeError extends Error {
 		}

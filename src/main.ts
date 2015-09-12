@@ -2,8 +2,7 @@
 
 const regedit		= require("regedit");
 
-import {Promise}	from "bluebird";
-import * as _		from "lodash";
+import {Promise, IReject, IResolve, IResolveWithResult}	from "bluebird";
 
 /** The configurations for all installed versions of Visual Studio */
 export interface VisualStudioConfiguration {
@@ -44,69 +43,69 @@ export class VisualStudio {
 		if (this.loader && !refresh)
 			return this.loader;
 
-		this.loader = new Promise<VisualStudioConfiguration>((loaderResolve, loaderReject) => {
-			const configurations: VisualStudioConfiguration = {};
+		this.loader = new Promise<VisualStudioConfiguration>(
+			(loaderResolve: IResolveWithResult<VisualStudioConfiguration>, loaderReject: IReject) => {
+				const configurations: VisualStudioConfiguration = {};
 
-			const vsKeyNames : VSKeyNames = this.vsKeyNames;
-			const keys: any = {};
+				const vsKeyNames: VSKeyNames = this.vsKeyNames;
+				const keys: any = {};
 
-			// Attempt to load keys individually, since regedit bulk operation errors out if *any* keys are missing.
-			const keyLoaders = vsKeyNames.allKeyNames.map(keyName => new Promise<void>(
-				(keyLoaderResolve, keyLoaderReject) => {
-					regedit.list(keyName, (error, items) => {
-						if (error && error.code !== 2 /* key not found */)
-							keyLoaderReject(error);
+				// Attempt to load keys individually, since regedit bulk operation errors out if *any* keys are missing.
+				const keyLoaders: Promise<void>[] =
+					vsKeyNames.allKeyNames.map(keyName => new Promise<void>(
+						(keyLoaderResolve: IResolve, keyLoaderReject: IReject) => {
+							regedit.list(keyName, (error, items) => {
+								if (error && error.code !== 2 /* key not found */)
+									keyLoaderReject(error);
 
-						if (items && items[keyName])
-							keys[keyName] = items[keyName];
+								if (items && items[keyName])
+									keys[keyName] = items[keyName];
 
-						keyLoaderResolve(undefined);
-					});
-				})
-			);
-
-			// Once we're all done, scrape the registry data and pass it along.
-			Promise.all(keyLoaders)
-				.then(() => {
-					let vsInstallDir = this.getInstallDir(
-						keys[vsKeyNames.vs2010.vs]
+								keyLoaderResolve();
+							});
+						})
 					);
-					if (vsInstallDir)
-					{
-						configurations.vs2010 = {
-							edition: "unknown",
-							installDir: vsInstallDir
-						};
-					}
 
-					vsInstallDir = this.getInstallDir(
-						keys[vsKeyNames.vs2013.vs]
+				// Once we're all done, scrape the registry data and pass it along.
+				Promise.all(keyLoaders)
+					.then(() => {
+						let vsInstallDir = this.getInstallDir(
+							keys[vsKeyNames.vs2010.vs]
+						);
+						if (vsInstallDir) {
+							configurations.vs2010 = {
+								edition: "unknown",
+								installDir: vsInstallDir
+							};
+						}
+
+						vsInstallDir = this.getInstallDir(
+							keys[vsKeyNames.vs2013.vs]
+						);
+						if (vsInstallDir) {
+							configurations.vs2013 = {
+								edition: "unknown",
+								installDir: vsInstallDir
+							};
+						}
+
+						vsInstallDir = this.getInstallDir(
+							keys[vsKeyNames.vs2015.vs]
+						);
+						if (vsInstallDir) {
+							configurations.vs2015 = {
+								edition: "unknown",
+								installDir: vsInstallDir
+							};
+						}
+
+						loaderResolve(configurations);
+					})
+					.catch(
+						error => loaderReject(error)
 					);
-					if (vsInstallDir)
-					{
-						configurations.vs2013 = {
-							edition: "unknown",
-							installDir: vsInstallDir
-						};
-					}
-
-					vsInstallDir = this.getInstallDir(
-						keys[vsKeyNames.vs2015.vs]
-					);
-					if (vsInstallDir)
-					{
-						configurations.vs2015 = {
-							edition: "unknown",
-							installDir: vsInstallDir
-						};
-					}
-
-					loaderResolve(configurations);
-				})
-				.catch(
-					error => loaderReject(error)
-				);
-		});
+			}
+		);
 
 		return this.loader;
 	}
@@ -120,7 +119,7 @@ export class VisualStudio {
 		const wow6432Prefix = process.arch === "x64" ? "\\Wow6432Node" : "";
 		const vsKeyPrefix = `HKLM\\SOFTWARE${wow6432Prefix}\\Microsoft\\VisualStudio\\`;
 
-		const keyNames : VSKeyNames = {
+		const keyNames: VSKeyNames = {
 			vs2010: {
 				isoShell: `${vsKeyPrefix}10.0\\Setup\\IsoShell`,	// VS isolated shell (e.g. installed with SSDT)
 				vs: `${vsKeyPrefix}10.0\\Setup\\vs`

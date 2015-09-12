@@ -1,11 +1,27 @@
 var gulp = require("gulp");
-var tsc = require("gulp-tsc");
 var mocha = require("gulp-mocha");
+var tsc = require("gulp-tsc");
+var tslint = require("gulp-tslint");
 
 var tsConfig = require("./src/tsconfig.json").compilerOptions;
 var testTSConfig = require("./src/tests/tsconfig.json").compilerOptions;
+var tslintConfig = require("./src/tslint.json");
 
-gulp.task("default", ["build", "test"]);
+gulp.task("default", ["analyze", "build", "test"]);
+
+gulp.task("analyze", function () {
+	return gulp.src(["src/**/*.ts", "!src/**/*.d.ts"])
+		.pipe(
+			tslint({
+				configuration: tslintConfig
+			})
+		)
+		.pipe(
+			tslint.report("verbose", {
+				emitError: false
+        	})
+		);
+});
 
 gulp.task("build", [
 	"build:app",

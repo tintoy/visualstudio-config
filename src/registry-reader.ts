@@ -3,7 +3,7 @@ const regedit		= require("regedit");
 import {Promise}	from "bluebird";
 
 /**
-	Represents a facility for reading data from the Windows registry.
+ * Represents a facility for reading data from the Windows registry.
  */
 export interface IRegistryReader {
 	/**
@@ -13,21 +13,21 @@ export interface IRegistryReader {
 	 * @return {} An object literal, with the key name(s) acting as key(s)s into the registry key data.
 	 * @desc The returned regisry keys are in the following format: Sub-key = object literal, value = typed property.
 	 */
-    readKeys(keyNames: string|string[], maxDepth: number) : Promise<any>;
+	readKeys(keyNames: string|string[], maxDepth: number): Promise<any>;
 }
 
 /**
-	A registry reader based on regedit.
+ * A registry reader based on regedit.
  */
 export class RegeditRegistryReader implements IRegistryReader {
-    /**
+	/**
 	 * Read one or more registry keys.
 	 * @param keyNames {string|string[]} The name / names of registry key(s) to read.
 	 * @param maxDepth {number} The maximum depth to which the key(s) will be expanded.
-	 * @return {} An object literal, with properties corresponding to the full path of the loaded key(s).
-	 * @desc The returned regisry keys are in the following format: Sub-key = object literal, value = property of intrinsic data type.
+	 * @return {} An object literal, with the key name(s) acting as key(s)s into the registry key data.
+	 * @desc The returned regisry keys are in the following format: Sub-key = object literal, value = typed property.
 	 */
-	readKeys(keyNames: string|string[], maxDepth: number = 1) : Promise<any> {
+	readKeys(keyNames: string|string[], maxDepth: number = 1): Promise<any> {
 		return new Promise<any>((loaded, loadFailed) => {
 			const loadKeyNames: string[] = (typeof keyNames === "string") ? [keyNames] : keyNames;
 
